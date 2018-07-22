@@ -1,0 +1,39 @@
+version: "2"
+services:
+  fpm:
+    #build: ../image
+    image: manaphp/php70:1.0
+    volumes: 
+      - ../:/var/www/html
+      - ./fpm/conf.d:/etc/php/conf.d
+      - /data/volumes/${COMPOSE_PROJECT_NAME}/fpm/:/var/log/php
+    restart: always
+  cron:
+    #build: ../image
+    image: manaphp/php70:1.0
+    volumes: 
+      - ../:/var/www/html
+      - ./fpm/conf.d:/etc/php/conf.d
+      - ./cron.d:/etc/cron.d
+      - /data/volumes/${COMPOSE_PROJECT_NAME}/cron:/var/log/cron
+    command: run cron
+    restart: always
+  cli:
+    #build: ../image
+    image: manaphp/php70:1.0
+    volumes: 
+      - ../:/var/www/html
+    command: run cli
+    restart: always
+  nginx:
+    image: nginx:1.13.3
+    volumes:
+      - /usr/share/zoneinfo/PRC:/etc/localtime
+      - ../:/var/www/html
+      - ./nginx/conf/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/docker-entrypoint.sh:/docker-entrypoint.sh
+      - /data/volumes/${COMPOSE_PROJECT_NAME}/nginx/log:/var/log/nginx
+    entrypoint: /docker-entrypoint.sh nginx -g "daemon off;"
+    ports:
+      - ${WEB_PORT}:80
+    restart: always
