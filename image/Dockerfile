@@ -77,5 +77,7 @@ ENTRYPOINT ["/usr/bin/docker-entrypoint.sh"]
 CMD ["run","fpm"]
 
 COPY ext/* /usr/lib/php/20170718/
+
 RUN echo 'extension=swoole.so'>/etc/php/7.2/mods-available/swoole.ini && phpenmod swoole\
-    &&echo 'extension=mcrypt.so'>/etc/php/7.2/mods-available/mcrypt.ini && phpenmod mcrypt
+    &&echo 'extension=mcrypt.so'>/etc/php/7.2/mods-available/mcrypt.ini && phpenmod mcrypt\
+    &&php -r "copy('https://getcomposer.org/download/1.6.5/composer.phar', '/usr/bin/composer');"&&chmod a+x /usr/bin/composer
