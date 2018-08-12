@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM ubuntu:artful
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -16,9 +16,7 @@ RUN apt-get update\
 
 WORKDIR "/var/www/html"
 
-RUN apt-get update\ 
-    &&mkdir -p /etc/php/7.0/mods-available\
-    &&echo 'extension=amqp.so'>/etc/php/7.0/mods-available/amqp.ini\
+RUN apt-get update\
     &&apt-get install -y --no-install-recommends\ 
         php-fpm\
         php-mcrypt\
@@ -56,7 +54,7 @@ RUN apt-get update\
     &&mkdir -p /run/php\
     &&mkdir -p /var/log/php\
     &&mkdir -p /etc/php/conf.d\
-    &&ln -s /etc/php/7.0/cli /etc/php/cli && ln -s /etc/php/7.0/fpm /etc/php/fpm && rm -rf /etc/php/mods-available\
+    &&ln -s /etc/php/7.1/cli /etc/php/cli && ln -s /etc/php/7.1/fpm /etc/php/fpm && rm -rf /etc/php/mods-available\
     &&touch /etc/php/conf.d/fpm.conf && echo 'include=/etc/php/conf.d/fpm.conf'>>/etc/php/fpm/php-fpm.conf\
     &&touch /etc/php/conf.d/php.ini && ln -s /etc/php/conf.d/php.ini /etc/php/cli/conf.d/custom.ini && ln -s /etc/php/conf.d/php.ini /etc/php/fpm/conf.d/custom.ini\
     &&sed -i \
@@ -77,6 +75,6 @@ RUN chmod +x /usr/bin/docker-entrypoint.sh
 ENTRYPOINT ["/usr/bin/docker-entrypoint.sh"]
 CMD ["run","fpm"]
 
-COPY ext/* /usr/lib/php/20151012/
-RUN echo 'extension=swoole.so'>/etc/php/7.0/mods-available/swoole.ini && phpenmod swoole\
+COPY ext/* /usr/lib/php/20160303/
+RUN echo 'extension=swoole.so'>/etc/php/7.1/mods-available/swoole.ini && phpenmod swoole\
     &&php -r "copy('https://getcomposer.org/download/1.6.5/composer.phar', '/usr/bin/composer');"&&chmod a+x /usr/bin/composer
