@@ -1,27 +1,26 @@
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 
 ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update\
    &&apt-get install -y --no-install-recommends bash-completion telnet net-tools iputils-ping iproute2 lsof strace htop ca-certificates curl vim-tiny dos2unix cron logrotate busybox-syslogd\
    &&echo '. /etc/bash_completion' >> /root/.bashrc\
+   &&ln -s /usr/share/bash-completion/completions /etc/bash_completion.d\
    &&ln -s /usr/bin/vim.tiny /usr/bin/vim && cp /etc/vim/vimrc.tiny /root/.vimrc&&echo "set nocompatible\nset backspace=2\nset number" >> /root/.vimrc\
    &&ln -s -f /usr/share/zoneinfo/PRC /etc/localtime\
    &&sed -i\
         -e 's|@include common|#@include common|'\
         -e 's|session       required   pam_env.so envfile=/etc/default/locale|#session       required   pam_env.so envfile=/etc/default/locale|'\
         /etc/pam.d/cron\
-   &&mkdir -p /var/log/cron\        
+   &&mkdir -p /var/log/cron\
    &&rm -rf /var/lib/apt/lists/* && apt-get clean
 
 WORKDIR "/var/www/html"
 
-RUN apt-get update\ 
-    &&mkdir -p /etc/php/7.0/mods-available\
-    &&echo 'extension=amqp.so'>/etc/php/7.0/mods-available/amqp.ini\
+RUN apt-get update\
     &&apt-get install -y --no-install-recommends\ 
         php-fpm\
-        php-mcrypt\
+	libmcrypt4\
         php-xdebug\
         php-amqp\
         php-stomp\
@@ -56,7 +55,7 @@ RUN apt-get update\
     &&mkdir -p /run/php\
     &&mkdir -p /var/log/php\
     &&mkdir -p /etc/php/conf.d\
-    &&ln -s /etc/php/7.0/cli /etc/php/cli && ln -s /etc/php/7.0/fpm /etc/php/fpm && rm -rf /etc/php/mods-available\
+    &&ln -s /etc/php/7.2/cli /etc/php/cli && ln -s /etc/php/7.2/fpm /etc/php/fpm && rm -rf /etc/php/mods-available\
     &&touch /etc/php/conf.d/fpm.conf && echo 'include=/etc/php/conf.d/fpm.conf'>>/etc/php/fpm/php-fpm.conf\
     &&touch /etc/php/conf.d/php.ini && ln -s /etc/php/conf.d/php.ini /etc/php/cli/conf.d/custom.ini && ln -s /etc/php/conf.d/php.ini /etc/php/fpm/conf.d/custom.ini\
     &&sed -i \
@@ -77,5 +76,6 @@ RUN chmod +x /usr/bin/docker-entrypoint.sh
 ENTRYPOINT ["/usr/bin/docker-entrypoint.sh"]
 CMD ["run","fpm"]
 
-COPY ext/* /usr/lib/php/20151012/
-RUN echo 'extension=swoole.so'>/etc/php/7.0/mods-available/swoole.ini && phpenmod swoole
+COPY ext/* /usr/lib/php/20170718/
+RUN echo 'extension=swoole.so'>/etc/php/7.2/mods-available/swoole.ini && phpenmod swoole\
+    &&echo 'extension=mcrypt.so'>/etc/php/7.2/mods-available/mcrypt.ini && phpenmod mcrypt
