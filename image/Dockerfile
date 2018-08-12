@@ -28,13 +28,16 @@ RUN apt-get update\
         php-mongodb\
         php-redis\
         php-mbstring\
+        php-intl\
         php-gd\
         php-imagick\
         php-mysql\
         php-pgsql\
         php-odbc\
+        php-sqlite3\
         php-curl\
         php-igbinary\
+        php-msgpack\
         php-xml\
         php-xmlrpc\
         php-apcu\
@@ -53,7 +56,7 @@ RUN apt-get update\
     &&mkdir -p /run/php\
     &&mkdir -p /var/log/php\
     &&mkdir -p /etc/php/conf.d\
-    &&ln -s /etc/php/7.0/cli /etc/php/cli && ln -s /etc/php/7.0/fpm /etc/php/fpm\
+    &&ln -s /etc/php/7.0/cli /etc/php/cli && ln -s /etc/php/7.0/fpm /etc/php/fpm && rm -rf /etc/php/mods-available\
     &&touch /etc/php/conf.d/fpm.conf && echo 'include=/etc/php/conf.d/fpm.conf'>>/etc/php/fpm/php-fpm.conf\
     &&touch /etc/php/conf.d/php.ini && ln -s /etc/php/conf.d/php.ini /etc/php/cli/conf.d/custom.ini && ln -s /etc/php/conf.d/php.ini /etc/php/fpm/conf.d/custom.ini\
     &&sed -i \
@@ -74,5 +77,5 @@ RUN chmod +x /usr/bin/docker-entrypoint.sh
 ENTRYPOINT ["/usr/bin/docker-entrypoint.sh"]
 CMD ["run","fpm"]
 
-COPY swoole.so /usr/lib/php/20151012/
+COPY ext/* /usr/lib/php/20151012/
 RUN echo 'extension=swoole.so'>/etc/php/7.0/mods-available/swoole.ini && phpenmod swoole
