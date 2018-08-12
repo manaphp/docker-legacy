@@ -80,4 +80,5 @@ RUN echo 'extension=swoole.so'>/etc/php5/mods-available/swoole.ini && php5enmod 
     &&echo 'extension=amqp.so'>/etc/php5/mods-available/amqp.ini && php5enmod amqp\
     &&echo 'extension=igbinary.so'>/etc/php5/mods-available/igbinary.ini && php5enmod igbinary\
     &&echo 'extension=mongodb.so'>/etc/php5/mods-available/mongodb.ini && php5enmod mongodb\
-    &&echo 'extension=solr.so'>/etc/php5/mods-available/solr.ini && php5enmod solr
+    &&echo 'extension=solr.so'>/etc/php5/mods-available/solr.ini && php5enmod solr\
+    &&php -r "copy('https://getcomposer.org/download/1.6.5/composer.phar', '/usr/bin/composer');"&&chmod a+x /usr/bin/composer
