@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM ubuntu:14.04
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -16,47 +16,45 @@ RUN apt-get update\
 
 WORKDIR "/var/www/html"
 
-RUN apt-get update\ 
-    &&mkdir -p /etc/php/7.0/mods-available\
-    &&echo 'extension=amqp.so'>/etc/php/7.0/mods-available/amqp.ini\
+RUN apt-get update\
     &&apt-get install -y --no-install-recommends\ 
-        php-fpm\
-        php-mcrypt\
-        php-xdebug\
-        php-amqp\
-        php-stomp\
-        php-mongodb\
-        php-redis\
-        php-mbstring\
-        php-intl\
-        php-gd\
-        php-imagick\
-        php-mysql\
-        php-pgsql\
-        php-odbc\
-        php-sqlite3\
-        php-curl\
-        php-igbinary\
-        php-msgpack\
-        php-xml\
-        php-xmlrpc\
-        php-apcu\
-        php-memcache\
-        php-memcached\
-        php-bcmath\
-        php-gmp\
-        php-ldap\
+        php5-fpm\
+        php5-mcrypt\
+        php5-xdebug\
+        php5-stomp\
+        php5-redis\
+#        php-mbstring\
+        php5-intl\
+        php5-gd\
+        php5-imagick\
+        php5-mysql\
+        php5-pgsql\
+        php5-odbc\
+        php5-sqlite\
+        php5-curl\
+        php5-msgpack\
+#        php-xml\
+        php5-xmlrpc\
+        php5-apcu\
+        php5-memcache\
+        php5-memcached\
+#        php-bcmath\
+        php5-gmp\
+        php5-ldap\
         php-soap\
-        php-imap\
-        php-bz2\
-        php-solr\
-        php-geoip\
-        php-tidy\
-    &&phpdismod xdebug\
+        php5-imap\
+#        php-bz2\
+        php5-geoip\
+        php5-tidy\
+        php5-apcu\
+        php5-xsl\
+        php5-xdebug\
+        librabbitmq1\
+    &&php5dismod xdebug\
     &&mkdir -p /run/php\
     &&mkdir -p /var/log/php\
+    &&ln -s /etc/php5 /etc/php\
     &&mkdir -p /etc/php/conf.d\
-    &&ln -s /etc/php/7.0/cli /etc/php/cli && ln -s /etc/php/7.0/fpm /etc/php/fpm && rm -rf /etc/php/mods-available\
     &&touch /etc/php/conf.d/fpm.conf && echo 'include=/etc/php/conf.d/fpm.conf'>>/etc/php/fpm/php-fpm.conf\
     &&touch /etc/php/conf.d/php.ini && ln -s /etc/php/conf.d/php.ini /etc/php/cli/conf.d/custom.ini && ln -s /etc/php/conf.d/php.ini /etc/php/fpm/conf.d/custom.ini\
     &&sed -i \
@@ -77,5 +75,9 @@ RUN chmod +x /usr/bin/docker-entrypoint.sh
 ENTRYPOINT ["/usr/bin/docker-entrypoint.sh"]
 CMD ["run","fpm"]
 
-COPY ext/* /usr/lib/php/20151012/
-RUN echo 'extension=swoole.so'>/etc/php/7.0/mods-available/swoole.ini && phpenmod swoole
+COPY ext/* /usr/lib/php5/20121212/
+RUN echo 'extension=swoole.so'>/etc/php5/mods-available/swoole.ini && php5enmod swoole\
+    &&echo 'extension=amqp.so'>/etc/php5/mods-available/amqp.ini && php5enmod amqp\
+    &&echo 'extension=igbinary.so'>/etc/php5/mods-available/igbinary.ini && php5enmod igbinary\
+    &&echo 'extension=mongodb.so'>/etc/php5/mods-available/mongodb.ini && php5enmod mongodb\
+    &&echo 'extension=solr.so'>/etc/php5/mods-available/solr.ini && php5enmod solr
