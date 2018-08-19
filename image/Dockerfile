@@ -70,6 +70,7 @@ RUN apt-get update\
     &&sed -i\
         -e 's|;error_log = php_errors.log|error_log = /var/log/php/error.log|'\
         /etc/php/fpm/php.ini\
+    &&ln -s /usr/sbin/php-fpm7.3 /usr/sbin/php-fpm\    
     &&rm -rf /var/lib/apt/lists/* && apt-get clean
 
 COPY docker-entrypoint.sh /usr/bin/
