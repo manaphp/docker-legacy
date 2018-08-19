@@ -21,7 +21,7 @@ fi
 
 function run_fpm {
     chmod --silent a+rw /var/www/html/{data,tmp,public/uploads} || true
-    exec php-fpm7.0 --nodaemonize;
+    exec php-fpm --nodaemonize;
 }
 
 function run_cli {
