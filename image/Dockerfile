@@ -50,6 +50,7 @@ RUN apt-get update\
         php-solr\
         php-geoip\
         php-tidy\
+        php-zip\
     &&phpdismod xdebug\
     &&mkdir -p /run/php\
     &&mkdir -p /var/log/php\
@@ -61,9 +62,10 @@ RUN apt-get update\
         -e 's|listen =.*|listen = 9000|'\
         -e 's|;access.log.*|access.log = /var/log/php/access.log|'\
         -e 's|;access.format|access.format|'\
+        -e 's|;catch_workers_output|catch_workers_output|'\
         /etc/php/fpm/pool.d/www.conf\
     &&sed -i\
-        -e 's|error_log =.*|error_log = /var/log/php/fpm-error.log|'\
+        -e 's|error_log =.*|error_log = /var/log/php/error.log|'\
         /etc/php/fpm/php-fpm.conf\
     &&sed -i\
         -e 's|;error_log = php_errors.log|error_log = /var/log/php/error.log|'\
