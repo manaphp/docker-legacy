@@ -25,17 +25,18 @@ function run_fpm {
 }
 
 function run_cli {
-    exec tail -f -n 0 /bin/bash
+    exec /bin/bash -c "trap : TERM INT; sleep infinity & wait"
 }
 
 function run_cron {
-    chmod -R 0644 /etc/cron.d;chown -R root:root /etc/cron.d
-    syslogd -O /var/log/cron/cron.log; cron -L 15;exec tail -f -n 1 /var/log/cron/cron.log
+    chmod -R 0644 /etc/cron.d; chown -R root:root /etc/cron.d
+    syslogd -O /var/log/cron/cron.log; cron -L 15; exec /bin/bash -c "trap : TERM INT; sleep infinity & wait"
 }
 
 function run_help {
     echo " run fpm";
-    echo " run cron"
+    echo " run cron";
+    echo " run cli";
 }
 
 #############################################################################################################
