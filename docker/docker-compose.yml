@@ -1,0 +1,7 @@
+version: "2"
+services: 
+  mysql:
+    build: ../image
+    #image: manaphp/dmysql:1.0
+    ports:
+      - 3306:3306
