@@ -2,7 +2,7 @@ FROM ubuntu:18.04
 
 ENV DEBIAN_FRONTEND noninteractive
 
-COPY docker-initdb.d/* /tmp/
+COPY docker-initdb.d/manaphp.sql /tmp/
 COPY conf/* /etc/mysql/conf.d/
 
 RUN apt-get update\
