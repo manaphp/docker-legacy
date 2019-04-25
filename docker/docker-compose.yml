@@ -1,0 +1,7 @@
+version: "2"
+services: 
+  mongodb:
+    #build: ../image
+    image: manaphp/dmongodb
+    ports:
+      - 27017:27017
