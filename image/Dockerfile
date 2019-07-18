@@ -1,11 +1,11 @@
-FROM debian:buster-slim
+FROM ubuntu:18.04
 
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN sed -i 's/deb.debian.org/mirrors.aliyun.com/g' /etc/apt/sources.list\
-    &&apt-get update\
+RUN sed -i 's/archive.ubuntu.com/mirrors.aliyun.com/g' /etc/apt/sources.list\
+    &&apt-get update && apt-get -y dist-upgrade && apt-get install -y apt-utils software-properties-common\
+    &&add-apt-repository -y  ppa:ondrej/nginx-mainline; add-apt-repository -y ppa:ondrej/php\
     &&apt-get install -y --no-install-recommends bash-completion telnet net-tools iputils-ping iproute2 lsof strace htop ca-certificates curl wget vim-tiny dos2unix cron logrotate busybox-syslogd\
-    &&wget -O /tmp/php https://packages.sury.org/php/README.txt&&/bin/bash /tmp/php\
     &&echo '. /etc/bash_completion' >> /root/.bashrc\
     &&ln -s /usr/share/bash-completion/completions /etc/bash_completion.d\
     &&ln -s /usr/bin/vim.tiny /usr/bin/vim && cp /etc/vim/vimrc.tiny /root/.vimrc&&echo "set nocompatible\nset backspace=2\nset number" >> /root/.vimrc\
