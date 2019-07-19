@@ -3,8 +3,8 @@ set -e
 
 #############################################################################################################
 work_path=/var/www/html
-if [[ -f ${work_path}/manacli ]] && [[ ! -e /etc/bash_completion.d/manacli ]]; then
-    cat << EOF > /etc/bash_completion.d/manacli
+if [[ -f ${work_path}/manacli ]] && [[ ! -e /usr/share/bash-completion/completions/manacli ]]; then
+    cat << EOF > /usr/share/bash-completion/completions/manacli
 #!/bin/bash
 
 _manacli(){
@@ -14,7 +14,7 @@ _manacli(){
 
 complete -F _manacli manacli
 EOF
-    chmod a+x /etc/bash_completion.d/manacli ${work_path}/manacli
+    chmod a+x /usr/share/bash-completion/completions/manacli ${work_path}/manacli
     dos2unix -q ${work_path}/manacli
     ln -s ${work_path}/manacli /bin/manacli
 fi
