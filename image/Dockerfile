@@ -71,7 +71,6 @@ RUN ln -s /etc/php/7.3/cli /etc/php/cli && ln -s /etc/php/7.3/fpm /etc/php/fpm\
 COPY docker-entrypoint.sh /usr/bin/
 RUN chmod +x /usr/bin/docker-entrypoint.sh
 ENTRYPOINT ["/usr/bin/docker-entrypoint.sh"]
-CMD ["run","fpm"]
 
 COPY ext/* /usr/lib/php/20180731/
 
