@@ -3,8 +3,8 @@ set -e
 
 #############################################################################################################
 work_path=/var/www/html
-if [[ -f ${work_path}/manacli ]] && [[ ! -e /etc/bash_completion.d/manacli ]]; then
-    cat << EOF > /etc/bash_completion.d/manacli
+if [[ -f ${work_path}/manacli ]] && [[ ! -e /usr/share/bash-completion/completions/manacli ]]; then
+    cat << EOF > /usr/share/bash-completion/completions/manacli
 #!/bin/bash
 
 _manacli(){
@@ -14,30 +14,10 @@ _manacli(){
 
 complete -F _manacli manacli
 EOF
-    chmod a+x /etc/bash_completion.d/manacli ${work_path}/manacli
+    chmod a+x /usr/share/bash-completion/completions/manacli ${work_path}/manacli
     dos2unix -q ${work_path}/manacli
     ln -s ${work_path}/manacli /bin/manacli
 fi
-
-function run_fpm {
-    chmod --silent a+rw /var/www/html/{data,tmp,public/uploads} || true
-    exec php-fpm --nodaemonize;
-}
-
-function run_cli {
-    exec /bin/bash -c "trap : TERM INT; sleep infinity & wait"
-}
-
-function run_cron {
-    chmod -R 0644 /etc/cron.d; chown -R root:root /etc/cron.d
-    syslogd -O /var/log/cron/cron.log; cron -L 15; exec /bin/bash -c "trap : TERM INT; sleep infinity & wait"
-}
-
-function run_help {
-    echo " run fpm";
-    echo " run cron";
-    echo " run cli";
-}
 
 #############################################################################################################
 if [ -d /docker-entrypoint.d ]; then
@@ -51,19 +31,14 @@ if [ -d /docker-entrypoint.d ]; then
 fi
 
 #############################################################################################################
-if [ $# == 0 ]; then
-    run_fpm
-elif [ $1 == "run" ]; then
-  case ${2:-'--help'} in
-    fpm)
-        run_fpm;;
-    cron)
-        run_cron;;
-    cli)
-        run_cli;;
-    -h|--help)
-        run_help;;
-    esac
-else	
+if [ $# != 0 ]; then
     exec "$@"
+elif [ -d /var/www/html/public ]; then
+    chmod --silent a+rw /var/www/html/{data,tmp,public/uploads} || true
+    exec php-fpm --nodaemonize
+elif [ -f /etc/cron.d/php ]; then
+    exec tail -f -n 0 /bin/bash
+else   
+    chmod -R 0644 /etc/cron.d;chown -R root:root /etc/cron.d
+    syslogd -O /var/log/cron/cron.log; cron -L 15;exec tail -f -n 1 /var/log/cron/cron.log
 fi
