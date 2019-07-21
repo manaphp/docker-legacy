@@ -7,14 +7,13 @@ RUN sed -i 's/archive.ubuntu.com/mirrors.aliyun.com/g' /etc/apt/sources.list\
     &&add-apt-repository -y  ppa:ondrej/nginx-mainline; add-apt-repository -y ppa:ondrej/php\
     &&apt-get install -y --no-install-recommends bash-completion telnet net-tools iputils-ping iproute2 lsof strace htop ca-certificates curl wget vim-tiny dos2unix cron logrotate busybox-syslogd\
     &&echo '. /etc/bash_completion' >> /root/.bashrc\
-    &&ln -s /usr/share/bash-completion/completions /etc/bash_completion.d\
     &&ln -s /usr/bin/vim.tiny /usr/bin/vim && cp /etc/vim/vimrc.tiny /root/.vimrc&&echo "set nocompatible\nset backspace=2\nset number" >> /root/.vimrc\
     &&ln -s -f /usr/share/zoneinfo/PRC /etc/localtime\
     &&sed -i\
         -e 's|@include common|#@include common|'\
         -e 's|session       required   pam_env.so envfile=/etc/default/locale|#session       required   pam_env.so envfile=/etc/default/locale|'\
         /etc/pam.d/cron\
-   &&mkdir -p /var/log/cron
+    &&mkdir -p /var/log/cron
 
 WORKDIR "/var/www/html"
 
@@ -72,7 +71,6 @@ RUN ln -s /etc/php/7.2/cli /etc/php/cli && ln -s /etc/php/7.2/fpm /etc/php/fpm\
 COPY docker-entrypoint.sh /usr/bin/
 RUN chmod +x /usr/bin/docker-entrypoint.sh
 ENTRYPOINT ["/usr/bin/docker-entrypoint.sh"]
-CMD ["run","fpm"]
 
 COPY ext/* /usr/lib/php/20170718/
 
