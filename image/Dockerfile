@@ -49,6 +49,7 @@ RUN apt-get install -y --no-install-recommends\
         php7.1-solr\
         php7.1-geoip\
         php7.1-tidy\
+        php7.1-zip\
     &&mkdir -p /run/php\
     &&mkdir -p /var/log/php\
     &&mkdir -p /etc/php/conf.d
