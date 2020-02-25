@@ -1,0 +1,16 @@
+{
+    "name": "manaphp/app-api",
+    "description": "ManaPHP Api Application",
+    "type": "project",
+    "require": {
+        "manaphp/manaphp": "dev-master"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "ManaPHP Mark",
+            "email": "manaphp@qq.com"
+        }
+    ],
+    "minimum-stability": "dev"
+}
