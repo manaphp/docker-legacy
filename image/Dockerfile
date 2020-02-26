@@ -1,3 +1,27 @@
+FROM ubuntu:18.04 as builder
+
+ENV DEBIAN_FRONTEND noninteractive
+WORKDIR /tmp
+
+RUN sed -i 's/archive.ubuntu.com/mirrors.aliyun.com/g' /etc/apt/sources.list\
+    &&apt-get update && apt-get -y dist-upgrade && apt-get install -y apt-utils software-properties-common\
+    &&add-apt-repository -y  ppa:ondrej/nginx-mainline; add-apt-repository -y ppa:ondrej/php\
+	&& apt-get install -y --no-install-recommends curl build-essential
+RUN  apt-get install -y --no-install-recommends php7.2-dev
+RUN curl -o swoole.tar.gz https://github.com/swoole/swoole-src/archive/v4.3.6.tar.gz -L && \
+    tar zxvf swoole.tar.gz && \
+    mv swoole-src* swoole-src && \
+    cd swoole-src && \
+    phpize && \
+    ./configure \
+    --enable-openssl  \
+    --enable-http2  \
+    --enable-sockets \
+    --enable-mysqlnd && \
+    make clean && make && make install && \
+    strip /usr/lib/php/20170718/swoole.so
+
+
 FROM ubuntu:18.04
 
 ENV DEBIAN_FRONTEND noninteractive
@@ -73,6 +97,6 @@ COPY docker-entrypoint.sh /usr/bin/
 RUN chmod +x /usr/bin/docker-entrypoint.sh
 ENTRYPOINT ["/usr/bin/docker-entrypoint.sh"]
 
-COPY ext/* /usr/lib/php/20170718/
+COPY --from=builder /usr/lib/php/20170718/swoole.so /usr/lib/php/20170718/
 
 RUN echo 'extension=swoole.so'>/etc/php/7.2/mods-available/swoole.ini && phpenmod swoole&&phpdismod xdebug
