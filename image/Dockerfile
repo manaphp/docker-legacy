@@ -8,7 +8,7 @@ RUN sed -i 's/archive.ubuntu.com/mirrors.aliyun.com/g' /etc/apt/sources.list\
     &&add-apt-repository -y  ppa:ondrej/nginx-mainline; add-apt-repository -y ppa:ondrej/php\
 	&& apt-get install -y --no-install-recommends curl build-essential
 RUN  apt-get install -y --no-install-recommends php7.1-dev
-RUN curl -o swoole.tar.gz https://github.com/swoole/swoole-src/archive/v4.3.6.tar.gz -L && \
+RUN curl -o swoole.tar.gz https://github.com/swoole/swoole-src/archive/v4.4.16.tar.gz -L && \
     tar zxvf swoole.tar.gz && \
     mv swoole-src* swoole-src && \
     cd swoole-src && \
