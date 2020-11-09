@@ -47,8 +47,6 @@ RUN apt-get install -y --no-install-recommends\
         php8.0-fpm\
         php8.0-xdebug\
         php8.0-amqp\
-        php8.0-stomp\
-        php8.0-mongodb\
         php8.0-redis\
         php8.0-mbstring\
         php8.0-intl\
@@ -62,7 +60,6 @@ RUN apt-get install -y --no-install-recommends\
         php8.0-igbinary\
         php8.0-msgpack\
         php8.0-xml\
-        php8.0-xmlrpc\
         php8.0-apcu\
         php8.0-memcache\
         php8.0-memcached\
@@ -73,7 +70,6 @@ RUN apt-get install -y --no-install-recommends\
         php8.0-imap\
         php8.0-bz2\
         php8.0-solr\
-        php8.0-geoip\
         php8.0-tidy\
         php8.0-zip\
     &&mkdir -p /run/php\
