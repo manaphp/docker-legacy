@@ -1,14 +1,15 @@
-FROM ubuntu:18.04 as builder
+FROM ubuntu:20.04 as builder
 
 ENV DEBIAN_FRONTEND noninteractive
 WORKDIR /tmp
 
 RUN sed -i 's/archive.ubuntu.com/mirrors.aliyun.com/g' /etc/apt/sources.list\
+    &&sed -i 's/security.ubuntu.com/mirrors.aliyun.com/g' /etc/apt/sources.list\
     &&apt-get update && apt-get -y dist-upgrade && apt-get install -y apt-utils software-properties-common\
     &&add-apt-repository -y  ppa:ondrej/nginx-mainline; add-apt-repository -y ppa:ondrej/php\
 	&& apt-get install -y --no-install-recommends curl build-essential
 RUN  apt-get install -y --no-install-recommends php7.3-dev
-RUN curl -o swoole.tar.gz https://github.com/swoole/swoole-src/archive/v4.4.19.tar.gz -L && \
+RUN curl -o swoole.tar.gz https://github.com/swoole/swoole-src/archive/v4.5.7.tar.gz -L && \
     tar zxvf swoole.tar.gz && \
     mv swoole-src* swoole-src && \
     cd swoole-src && \
@@ -22,11 +23,12 @@ RUN curl -o swoole.tar.gz https://github.com/swoole/swoole-src/archive/v4.4.19.t
     strip /usr/lib/php/20180731/swoole.so
 
 
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 
 ENV DEBIAN_FRONTEND noninteractive
 
 RUN sed -i 's/archive.ubuntu.com/mirrors.aliyun.com/g' /etc/apt/sources.list\
+    &&sed -i 's/security.ubuntu.com/mirrors.aliyun.com/g' /etc/apt/sources.list\
     &&apt-get update && apt-get -y dist-upgrade && apt-get install -y apt-utils software-properties-common\
     &&add-apt-repository -y  ppa:ondrej/nginx-mainline; add-apt-repository -y ppa:ondrej/php\
     &&apt-get install -y --no-install-recommends bash-completion telnet net-tools iputils-ping iproute2 lsof strace htop ca-certificates curl wget vim-tiny dos2unix cron logrotate busybox-syslogd\
