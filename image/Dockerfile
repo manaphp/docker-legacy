@@ -107,3 +107,7 @@ COPY --from=builder /usr/lib/php/20160303/seaslog.so /usr/lib/php/20160303/
 RUN echo 'extension=swoole.so'>/etc/php/7.1/mods-available/swoole.ini && phpenmod swoole\
     &&echo 'extension=seaslog.so'>/etc/php/7.1/mods-available/seaslog.ini && phpenmod seaslog\
     &&phpdismod xdebug
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"\
+    &&php composer-setup.php\
+    &&php -r "unlink('composer-setup.php');"\
+    &&mv composer.phar /usr/local/bin/composer
