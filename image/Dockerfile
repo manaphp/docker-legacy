@@ -8,7 +8,7 @@ RUN sed -i 's/archive.ubuntu.com/mirrors.aliyun.com/g' /etc/apt/sources.list\
     &&add-apt-repository -y  ppa:ondrej/nginx-mainline; add-apt-repository -y ppa:ondrej/php\
 	&& apt-get install -y --no-install-recommends curl build-essential
 RUN  apt-get install -y --no-install-recommends php7.1-dev
-RUN curl -o swoole.tar.gz https://github.com/swoole/swoole-src/archive/v4.4.19.tar.gz -L && \
+RUN curl -o swoole.tar.gz https://github.com/swoole/swoole-src/archive/v4.5.11.tar.gz -L && \
     tar zxvf swoole.tar.gz && \
     mv swoole-src* swoole-src && \
     cd swoole-src && \
@@ -20,7 +20,11 @@ RUN curl -o swoole.tar.gz https://github.com/swoole/swoole-src/archive/v4.4.19.t
     --enable-mysqlnd && \
     make clean && make && make install && \
     strip /usr/lib/php/20160303/swoole.so
-
+RUN curl -o seaslog.tar.gz https://github.com/SeasX/SeasLog/archive/SeasLog-2.1.0.tar.gz -L\
+    &&tar zxvf seaslog.tar.gz\
+    &&mv SeasLog-* seaslog\
+    &&cd seaslog\
+    &&phpize &&./configure &&make &&make install
 
 FROM ubuntu:18.04
 
@@ -41,7 +45,7 @@ RUN sed -i 's/archive.ubuntu.com/mirrors.aliyun.com/g' /etc/apt/sources.list\
 
 WORKDIR "/var/www/html"
 
-RUN apt-get install -y --no-install-recommends\ 
+RUN apt-get install -y --no-install-recommends\
         php7.1-fpm\
         php7.1-xdebug\
         php7.1-amqp\
@@ -98,5 +102,8 @@ RUN chmod +x /usr/bin/docker-entrypoint.sh
 ENTRYPOINT ["/usr/bin/docker-entrypoint.sh"]
 
 COPY --from=builder /usr/lib/php/20160303/swoole.so /usr/lib/php/20160303/
+COPY --from=builder /usr/lib/php/20160303/seaslog.so /usr/lib/php/20160303/
 
-RUN echo 'extension=swoole.so'>/etc/php/7.1/mods-available/swoole.ini && phpenmod swoole&&phpdismod xdebug
+RUN echo 'extension=swoole.so'>/etc/php/7.1/mods-available/swoole.ini && phpenmod swoole\
+    &&echo 'extension=seaslog.so'>/etc/php/7.1/mods-available/seaslog.ini && phpenmod seaslog\
+    &&phpdismod xdebug
