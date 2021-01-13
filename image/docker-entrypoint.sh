@@ -38,6 +38,12 @@ else
       rm -rf /etc/cron.d
       cp -r /tmp/cron.d /etc/cron.d
       chmod -R 0644 /etc/cron.d &&chown -R root:root /etc/cron.d
+
+      for f in /etc/cron.d/*; do
+        dos2unix -q $f
+        mac2unix -q $f
+      done
+
     elif [ -d /etc/cron.d ]; then
       echo "---------------------------------------------------------"
       echo "cron command needs permission as follows:"
