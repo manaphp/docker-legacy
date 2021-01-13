@@ -1,38 +1,44 @@
-FROM ubuntu:18.04 as builder
+FROM ubuntu:20.04 as builder
 
 ENV DEBIAN_FRONTEND noninteractive
+
 WORKDIR /tmp
 
 RUN sed -i 's/archive.ubuntu.com/mirrors.aliyun.com/g' /etc/apt/sources.list\
-    &&apt-get update && apt-get -y dist-upgrade && apt-get install -y apt-utils software-properties-common\
-    &&add-apt-repository -y  ppa:ondrej/nginx-mainline; add-apt-repository -y ppa:ondrej/php\
-	&& apt-get install -y --no-install-recommends curl build-essential
-RUN  apt-get install -y --no-install-recommends php7.1-dev
-RUN curl -o swoole.tar.gz https://github.com/swoole/swoole-src/archive/v4.5.11.tar.gz -L && \
-    tar zxvf swoole.tar.gz && \
-    mv swoole-src* swoole-src && \
-    cd swoole-src && \
-    phpize && \
-    ./configure \
-    --enable-openssl  \
-    --enable-http2  \
-    --enable-sockets \
-    --enable-mysqlnd && \
-    make clean && make && make install && \
-    strip /usr/lib/php/20160303/swoole.so
+    &&apt-get update && apt-get install -y software-properties-common\
+    &&add-apt-repository -y ppa:ondrej/php\
+	&&apt-get install -y --no-install-recommends curl build-essential
+
+RUN apt-get install -y --no-install-recommends php7.1-dev
+
+RUN curl -o swoole.tar.gz https://github.com/swoole/swoole-src/archive/v4.5.11.tar.gz -L\
+    &&tar zxvf swoole.tar.gz\
+    &&mv swoole-src* swoole-src\
+    &&cd swoole-src\
+    &&phpize\
+    &&./configure\
+        --enable-openssl\
+        --enable-http2\
+        --enable-sockets\
+        --enable-mysqlnd\
+    &&make && make install\
+    &&strip /usr/lib/php/20160303/swoole.so
+
 RUN curl -o seaslog.tar.gz https://github.com/SeasX/SeasLog/archive/SeasLog-2.1.0.tar.gz -L\
     &&tar zxvf seaslog.tar.gz\
     &&mv SeasLog-* seaslog\
     &&cd seaslog\
-    &&phpize &&./configure &&make &&make install
+    &&phpize &&./configure &&make &&make install\
+    &&strip /usr/lib/php/20160303/seaslog.so
 
-FROM ubuntu:18.04
+########################################################################################################################
+FROM ubuntu:20.04
 
 ENV DEBIAN_FRONTEND noninteractive
 
 RUN sed -i 's/archive.ubuntu.com/mirrors.aliyun.com/g' /etc/apt/sources.list\
-    &&apt-get update && apt-get -y dist-upgrade && apt-get install -y apt-utils software-properties-common\
-    &&add-apt-repository -y  ppa:ondrej/nginx-mainline; add-apt-repository -y ppa:ondrej/php\
+    &&apt-get update  && apt-get install -y software-properties-common\
+    &&add-apt-repository -y ppa:ondrej/php\
     &&apt-get install -y --no-install-recommends bash-completion telnet net-tools iputils-ping iproute2 lsof strace htop ca-certificates curl wget vim-tiny dos2unix cron logrotate busybox-syslogd\
     &&echo '. /etc/bash_completion' >> /root/.bashrc\
     &&ln -s /usr/bin/vim.tiny /usr/bin/vim && cp /etc/vim/vimrc.tiny /root/.vimrc&&echo "set nocompatible\nset backspace=2\nset number" >> /root/.vimrc\
@@ -42,6 +48,10 @@ RUN sed -i 's/archive.ubuntu.com/mirrors.aliyun.com/g' /etc/apt/sources.list\
         -e 's|session       required   pam_env.so envfile=/etc/default/locale|#session       required   pam_env.so envfile=/etc/default/locale|'\
         /etc/pam.d/cron\
     &&mkdir -p /var/log/cron
+
+RUN curl -o composer.phar https://install.phpcomposer.com/composer.phar -L\
+    &&chmod a+x composer.phar\
+    &&mv composer.phar /usr/local/bin/composer
 
 WORKDIR "/var/www/html"
 
@@ -81,6 +91,7 @@ RUN apt-get install -y --no-install-recommends\
     &&mkdir -p /run/php\
     &&mkdir -p /var/log/php\
     &&mkdir -p /etc/php/conf.d
+
 RUN ln -s /etc/php/7.1/cli /etc/php/cli && ln -s /etc/php/7.1/fpm /etc/php/fpm\
     &&touch /etc/php/conf.d/fpm.conf && echo 'include=/etc/php/conf.d/fpm.conf'>>/etc/php/fpm/php-fpm.conf\
     &&touch /etc/php/conf.d/php.ini && ln -s /etc/php/conf.d/php.ini /etc/php/cli/conf.d/custom.ini && ln -s /etc/php/conf.d/php.ini /etc/php/fpm/conf.d/custom.ini\
@@ -107,7 +118,3 @@ COPY --from=builder /usr/lib/php/20160303/seaslog.so /usr/lib/php/20160303/
 RUN echo 'extension=swoole.so'>/etc/php/7.1/mods-available/swoole.ini && phpenmod swoole\
     &&echo 'extension=seaslog.so'>/etc/php/7.1/mods-available/seaslog.ini && phpenmod seaslog\
     &&phpdismod xdebug
-RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"\
-    &&php composer-setup.php\
-    &&php -r "unlink('composer-setup.php');"\
-    &&mv composer.phar /usr/local/bin/composer
