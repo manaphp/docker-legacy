@@ -44,7 +44,7 @@ else
       echo "chmod -R 0644 /etc/cron.d; chown -R root:root /etc/cron.d"
       echo "---------------------------------------------------------"
     else
-      tail -f /dev/null
+      exec tail -f /dev/null
     fi
 
     if [ -d /etc/cron.d ]; then

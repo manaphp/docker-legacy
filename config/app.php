@@ -1,21 +1,27 @@
 <?php
 
 return [
-    'env' => env('APP_ENV', 'prod'),
-    'debug' => env('APP_DEBUG', false),
-    'version' => '1.1.1',
-    'timezone' => 'PRC',
+    'id'         => 'api',
+    'env'        => env('APP_ENV', 'prod'),
+    'debug'      => env('APP_DEBUG', false),
+    'version'    => '1.1.1',
+    'timezone'   => 'PRC',
     'master_key' => env('MASTER_KEY'),
-    'services' => [],
-    'params' => [],
-    'aliases' => [],
+    'params'     => [],
+    'aliases'    => [],
     'components' => [
-        'db' => [env('DB_URL')],
-        'redis' => [env('REDIS_URL')],
-        'mongodb' => [env('MONGODB_URL')],
-        'logger' => [
-            'level' => env('LOGGER_LEVEL', 'info'),
-            'appenders' => ['file' => ['file' => '@data/logger/log.log']],
-        ]
+        'httpServer' => ['port' => 9501, 'max_request' => 1000000],
+        'db'         => [env('DB_URL')],
+        'redis'      => [env('REDIS_URL')],
+        'logger'     => ['level' => env('LOGGER_LEVEL', 'info')],
     ],
+    'services'   => [],
+    'listeners'  => [],
+    'plugins'    => [
+        'debugger',
+        'cors',
+        //'slowlog',
+        //'logger',
+    ],
+    'tracers'    => env('APP_TRACERS', []),
 ];
