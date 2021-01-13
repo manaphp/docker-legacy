@@ -34,12 +34,22 @@ fi
 if [ $# != 0 ]; then
     exec "$@"
 else
-    echo "---------------------------------------------------------"
-    echo "cron command needs permission as follows:"
-    echo "chmod -R 0644 /etc/cron.d; chown -R root:root /etc/cron.d"
-    echo "---------------------------------------------------------"
+    if [ -d /tmp/cron.d ]; then
+      rm -rf /etc/cron.d
+      cp -r /tmp/cron.d /etc/cron.d
+      chmod -R 0644 /etc/cron.d &&chown -R root:root /etc/cron.d
+    elif [ -d /etc/cron.d ]; then
+      echo "---------------------------------------------------------"
+      echo "cron command needs permission as follows:"
+      echo "chmod -R 0644 /etc/cron.d; chown -R root:root /etc/cron.d"
+      echo "---------------------------------------------------------"
+    else
+      tail -f /dev/null
+    fi
 
-    syslogd -O /var/log/cron/cron.log\
-      &&cron -L 15\
-      &&exec tail -f -n 1 /var/log/cron/cron.log
+    if [ -d /etc/cron.d ]; then
+      syslogd -O /var/log/cron/cron.log\
+        &&cron -L 15\
+        &&exec tail -f -n 1 /var/log/cron/cron.log
+    fi
 fi
