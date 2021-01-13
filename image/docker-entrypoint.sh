@@ -33,12 +33,13 @@ fi
 #############################################################################################################
 if [ $# != 0 ]; then
     exec "$@"
-elif [ -d /var/www/html/public ]; then
-    chmod --silent a+rw /var/www/html/{data,tmp,public/uploads} || true
-    exec php-fpm --nodaemonize
-elif [ -f /etc/cron.d/php ]; then
-    exec tail -f -n 0 /bin/bash
-else   
-    chmod -R 0644 /etc/cron.d;chown -R root:root /etc/cron.d
-    syslogd -O /var/log/cron/cron.log; cron -L 15;exec tail -f -n 1 /var/log/cron/cron.log
+else
+    echo "---------------------------------------------------------"
+    echo "cron command needs permission as follows:"
+    echo "chmod -R 0644 /etc/cron.d; chown -R root:root /etc/cron.d"
+    echo "---------------------------------------------------------"
+
+    syslogd -O /var/log/cron/cron.log\
+      &&cron -L 15\
+      &&exec tail -f -n 1 /var/log/cron/cron.log
 fi
