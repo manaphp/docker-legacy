@@ -106,7 +106,8 @@ RUN ln -s /etc/php/7.1/cli /etc/php/cli && ln -s /etc/php/7.1/fpm /etc/php/fpm\
     &&sed -i\
         -e 's|;error_log = php_errors.log|error_log = /var/log/php/error.log|'\
         /etc/php/fpm/php.ini\
-    &&ln -s /usr/sbin/php-fpm7.1 /usr/sbin/php-fpm
+    &&ln -s /usr/sbin/php-fpm7.1 /usr/sbin/php-fpm\
+    &&rm -rf /etc/cron.d
 
 COPY docker-entrypoint.sh /usr/bin/
 RUN chmod +x /usr/bin/docker-entrypoint.sh
