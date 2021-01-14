@@ -48,6 +48,8 @@ else
       echo "cron command needs permission as follows:"
       echo "chmod -R 0644 /etc/cron.d; chown -R root:root /etc/cron.d"
       echo "---------------------------------------------------------"
+    elif [ -d ${PWD}/public ]; then
+      exec php-fpm --nodaemonize
     else
       exec tail -f /dev/null
     fi
