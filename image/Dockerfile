@@ -112,6 +112,7 @@ RUN chmod +x /usr/bin/docker-entrypoint.sh
 ENTRYPOINT ["/usr/bin/docker-entrypoint.sh"]
 
 COPY --from=builder /usr/lib/php/20180731/swoole.so /usr/lib/php/20180731/
+COPY --from=builder /usr/lib/php/20180731/seaslog.so /usr/lib/php/20180731/
 
 RUN echo 'extension=swoole.so'>/etc/php/7.3/mods-available/swoole.ini && phpenmod swoole\
     &&echo 'extension=seaslog.so'>/etc/php/7.3/mods-available/seaslog.ini && phpenmod seaslog\
