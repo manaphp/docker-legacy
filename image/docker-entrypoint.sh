@@ -2,21 +2,20 @@
 set -e
 
 #############################################################################################################
-work_path=/var/www/html
-if [[ -f ${work_path}/manacli ]] && [[ ! -e /usr/share/bash-completion/completions/manacli ]]; then
+if [[ -f ${PWD}/manacli ]] && [[ ! -e /usr/share/bash-completion/completions/manacli ]]; then
     cat << EOF > /usr/share/bash-completion/completions/manacli
 #!/bin/bash
 
 _manacli(){
-   COMPREPLY=( \$(php ${work_path}/manacli.php bash_completion complete \$COMP_CWORD "\${COMP_WORDS[@]}") )
+   COMPREPLY=( \$(php ${PWD}/manacli.php bash_completion complete \$COMP_CWORD "\${COMP_WORDS[@]}") )
    return 0;
 }
 
 complete -F _manacli manacli
 EOF
-    chmod a+x /usr/share/bash-completion/completions/manacli ${work_path}/manacli
-    dos2unix -q ${work_path}/manacli
-    ln -s ${work_path}/manacli /bin/manacli
+    chmod a+x /usr/share/bash-completion/completions/manacli ${PWD}/manacli
+    dos2unix -q ${PWD}/manacli
+    ln -s ${PWD}/manacli /bin/manacli
 fi
 
 #############################################################################################################
