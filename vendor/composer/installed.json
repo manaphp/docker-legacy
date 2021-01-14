@@ -1,0 +1,53 @@
+{
+    "packages": [
+        {
+            "name": "manaphp/framework",
+            "version": "dev-master",
+            "version_normalized": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/manaphp/framework.git",
+                "reference": "d47390d529d17f3c9659eba00438aa49fc0ee699"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/manaphp/framework/zipball/d47390d529d17f3c9659eba00438aa49fc0ee699",
+                "reference": "d47390d529d17f3c9659eba00438aa49fc0ee699",
+                "shasum": ""
+            },
+            "time": "2020-12-07T02:19:42+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "ManaPHP\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "ManaPHP Mark",
+                    "email": "manaphp@qq.com"
+                }
+            ],
+            "description": "The ManaPHP Framework",
+            "homepage": "https://github.com/manaphp/framework",
+            "keywords": [
+                "di",
+                "framework",
+                "laravel",
+                "manaphp",
+                "yii2"
+            ],
+            "support": {
+                "issues": "https://github.com/manaphp/framework/issues",
+                "source": "https://github.com/manaphp/framework/tree/develop"
+            },
+            "install-path": "../manaphp/framework"
+        }
+    ],
+    "dev": true
+}
