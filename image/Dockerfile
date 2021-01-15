@@ -24,12 +24,12 @@ RUN curl -o swoole.tar.gz https://github.com/swoole/swoole-src/archive/v4.5.11.t
     &&make && make install\
     &&strip /usr/lib/php/20200930/swoole.so
 
-RUN curl -o seaslog.tar.gz https://github.com/SeasX/SeasLog/archive/SeasLog-2.1.0.tar.gz -L\
-    &&tar zxvf seaslog.tar.gz\
-    &&mv SeasLog-* seaslog\
-    &&cd seaslog\
-    &&phpize &&./configure &&make &&make install\
-    &&strip /usr/lib/php/20200930/seaslog.so
+#RUN curl -o seaslog.tar.gz https://github.com/SeasX/SeasLog/archive/SeasLog-2.1.0.tar.gz -L\
+#    &&tar zxvf seaslog.tar.gz\
+#    &&mv SeasLog-* seaslog\
+#    &&cd seaslog\
+#    &&phpize &&./configure &&make &&make install\
+#    &&strip /usr/lib/php/20200930/seaslog.so
 
 ########################################################################################################################
 FROM ubuntu:20.04
@@ -109,8 +109,6 @@ RUN chmod +x /usr/bin/docker-entrypoint.sh
 ENTRYPOINT ["/usr/bin/docker-entrypoint.sh"]
 
 COPY --from=builder /usr/lib/php/20200930/swoole.so /usr/lib/php/20200930/
-COPY --from=builder /usr/lib/php/20200930/seaslog.so /usr/lib/php/20200930/
 
 RUN echo 'extension=swoole.so'>/etc/php/8.0/mods-available/swoole.ini && phpenmod swoole\
-    &&echo 'extension=seaslog.so'>/etc/php/8.0/mods-available/seaslog.ini && phpenmod seaslog\
     &&phpdismod xdebug
